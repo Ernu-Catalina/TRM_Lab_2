@@ -20,19 +20,21 @@
     color: white;
   }
 
-  /* Scan text style */
+  /* Instruction text style */
   #scanText {
     position: absolute;
-    top: 50%;
+    top: 20%; /* higher on screen */
     left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2em;
-    color: yellow;
+    transform: translateX(-50%);
+    font-size: 1.5em;
+    color: white;
     z-index: 10000;
+    text-align: center;
     text-shadow: 2px 2px 5px black;
     pointer-events: none;
     opacity: 1;
-    transition: opacity 1s ease; /* Smooth fade-out */
+    transition: opacity 1s ease; /* smooth fade-out */
+    width: 80%; /* wrap text nicely */
   }
 </style>
 
@@ -41,8 +43,10 @@
     <div>Loading, please wait...</div>
   </div>
 
-  <!-- Scan text overlay -->
-  <div id="scanText">Scan here!</div>
+  <!-- Instruction text overlay -->
+  <div id="scanText">
+    First the sun warms the land, then the star takes its stand, third the moon glows soft and bright, last the comet cuts the night.
+  </div>
 
   <a-scene
     vr-mode-ui="enabled: false;"
@@ -137,19 +141,19 @@
 
     const scanText = document.querySelector("#scanText");
 
-    // Unlock Mars when Sun scanned
+    // Show Mars when Sun scanned
     document.querySelector("#marker1").addEventListener("markerFound", () => {
       scanned1 = true;
       document.querySelector("#marsModel").setAttribute("visible", true);
 
-      // Fade out the "Scan here!" text
+      // Fade out instruction text
       scanText.style.opacity = "0";
       setTimeout(() => {
         scanText.style.display = "none";
-      }, 1000); // Match transition duration
+      }, 1000); // match CSS transition
     });
 
-    // Unlock Moon when Sun & Mars scanned
+    // Show Moon when Sun & Mars scanned
     document.querySelector("#marker2").addEventListener("markerFound", () => {
       if (scanned1) {
         scanned2 = true;
@@ -157,7 +161,7 @@
       }
     });
 
-    // Unlock Phoenix when Sun & Mars & Moon scanned
+    // Show Phoenix when Sun & Mars & Moon scanned
     document.querySelector("#marker3").addEventListener("markerFound", () => {
       if (scanned1 && scanned2) {
         scanned3 = true;
@@ -165,11 +169,9 @@
       }
     });
 
-    // Phoenix only works if ALL previous scanned
+    // Phoenix remains visible even if not all scanned
     document.querySelector("#marker4").addEventListener("markerFound", () => {
-      if (!(scanned1 && scanned2 && scanned3)) {
-        document.querySelector("#phoenixModel").setAttribute("visible", false);
-      }
+      document.querySelector("#phoenixModel").setAttribute("visible", true);
     });
   </script>
 </body>
