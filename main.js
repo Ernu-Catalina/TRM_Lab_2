@@ -5,6 +5,12 @@ const loader = new GLTFLoader();
 const rotatingObjects = [];
 let sunLight;
 
+if (sceneEl.camera) {
+  // Set a wider Field Of View (increase value to reduce zoom)
+  sceneEl.camera.fov = 75; // try values 60-90; larger = wider view (less zoom)
+  sceneEl.camera.updateProjectionMatrix();
+}
+
 // Function to create glowing sun sphere
 function createSun() {
   const sunColor = 0x73430d;
