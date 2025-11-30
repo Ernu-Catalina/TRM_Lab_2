@@ -19,12 +19,30 @@
     font-size: 1.25em;
     color: white;
   }
+
+  /* Scan text style */
+  #scanText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2em;
+    color: yellow;
+    z-index: 10000;
+    text-shadow: 2px 2px 5px black;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 1s ease; /* Smooth fade-out */
+  }
 </style>
 
 <body style="margin:0; overflow:hidden;">
   <div class="arjs-loader">
     <div>Loading, please wait...</div>
   </div>
+
+  <!-- Scan text overlay -->
+  <div id="scanText">Scan here!</div>
 
   <a-scene
     vr-mode-ui="enabled: false;"
@@ -117,10 +135,18 @@
     let scanned2 = false;
     let scanned3 = false;
 
+    const scanText = document.querySelector("#scanText");
+
     // Unlock Mars when Sun scanned
     document.querySelector("#marker1").addEventListener("markerFound", () => {
       scanned1 = true;
       document.querySelector("#marsModel").setAttribute("visible", true);
+
+      // Fade out the "Scan here!" text
+      scanText.style.opacity = "0";
+      setTimeout(() => {
+        scanText.style.display = "none";
+      }, 1000); // Match transition duration
     });
 
     // Unlock Moon when Sun & Mars scanned
