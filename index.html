@@ -20,14 +20,18 @@
   <button id="startBtn">Start AR</button>
 
   <!-- AR Scene -->
-  <a-scene
-    id="ar-scene"
-    embedded
-    vr-mode-ui="enabled: false"
-    renderer="logarithmicDepthBuffer: true;"
-    device-orientation-permission-ui="enabled: true;"
-    arjs="trackingMethod: best; sourceType: webcam; sourceWidth:1280; sourceHeight:720; displayWidth:window.innerWidth; displayHeight:window.innerHeight;"
-  >
+<a-scene
+  embedded
+  vr-mode-ui="enabled: false"
+  renderer="logarithmicDepthBuffer: true;"
+  arjs="trackingMethod: best; sourceType: webcam; 
+        sourceWidth: window.innerWidth; 
+        sourceHeight: window.innerHeight; 
+        displayWidth: window.innerWidth; 
+        displayHeight: window.innerHeight;"
+  device-orientation-permission-ui="enabled: true;"
+>
+
 
     <!-- Sun -->
     <a-nft type="nft" url="assets/markers/1_sun" smooth="true">
