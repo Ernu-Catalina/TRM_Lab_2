@@ -39,11 +39,13 @@ function loadModel(path, scale = 1, position = { x:0, y:0, z:0 }) {
 }
 
 // Initialize each NFT entity with 3D object
+// ...existing code...
 async function init() {
   const sun = createSun();
-  const mars = await loadModel('/models/mars/mars.gltf', 0.7, { x:8, y:0, z:0 });
-  const moon = await loadModel('/models/moon/moon.gltf', 0.5, { x:5, y:0, z:0 });
-  const phoenix = await loadModel('/models/planet_of_phoenix/planet_of_phoenix.gltf', 1, { x:12, y:0, z:0 });
+  // scale smaller and move slightly back in z so they're not right on the marker
+  const mars = await loadModel('/models/mars/mars.gltf', 0.35, { x: 0, y: 0, z: -1.0 });
+  const moon = await loadModel('/models/moon/moon.gltf', 0.25, { x: 0, y: 0, z: -0.8 });
+  const phoenix = await loadModel('/models/planet_of_phoenix/planet_of_phoenix.gltf', 0.6, { x: 0, y: 0, z: -1.2 });
 
   // Attach models to AR entities
   document.querySelector('#sun').setObject3D('mesh', sun);
@@ -51,38 +53,53 @@ async function init() {
   document.querySelector('#moon').setObject3D('mesh', moon);
   document.querySelector('#phoenix').setObject3D('mesh', phoenix);
 
+  // Start them hidden until the marker is found
+  ['sun','mars','moon','phoenix'].forEach(id => {
+    const el = document.querySelector(`#${id}`);
+    if (el) el.setAttribute('visible', false);
+  });
+
+  // Toggle visibility with marker events
+  function toggleVisibility(markerUrl, id) {
+    const markerEl = document.querySelector(`a-nft[url="${markerUrl}"]`);
+    const objEl = document.querySelector(`#${id}`);
+    if (!markerEl || !objEl) return;
+    markerEl.addEventListener('markerFound', () => objEl.setAttribute('visible', true));
+    markerEl.addEventListener('markerLost', () => objEl.setAttribute('visible', false));
+  }
+  toggleVisibility('assets/markers/1_sun', 'sun');
+  toggleVisibility('assets/markers/2_star', 'mars');
+  toggleVisibility('assets/markers/3_moon', 'moon');
+  toggleVisibility('assets/markers/4_comet', 'phoenix');
+
   // Rotate planets
   rotatingObjects.push(sun, mars, moon, phoenix);
 
   // Animate rotation
   const sceneEl = document.querySelector('a-scene');
   sceneEl.addEventListener('renderstart', () => {
-    // Improve renderer quality by using device pixel ratio and explicit renderer sizing.
-    // This reduces the blocky/low-quality camera feed on high-DPI screens.
     try {
       if (sceneEl.renderer) {
         sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1);
         sceneEl.renderer.setSize(window.innerWidth, window.innerHeight);
-        // Improve color encoding / tonemapping for nicer visuals
         sceneEl.renderer.outputEncoding = THREE.sRGBEncoding;
         sceneEl.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         sceneEl.renderer.toneMappingExposure = 1.0;
       }
 
-      // Set a slightly wider camera FOV to prevent the camera view from feeling "zoomed in".
-      if (sceneEl.camera) {
-        // Use a comfortable FOV; feel free to tweak between 50-75 depending on device.
-        sceneEl.camera.fov = 120;
+      // AR.js will set projection, but use a reasonable fallback
+      if (sceneEl.camera && sceneEl.camera.isPerspectiveCamera) {
+        sceneEl.camera.fov = 75;
+        sceneEl.camera.aspect = window.innerWidth / window.innerHeight;
         sceneEl.camera.updateProjectionMatrix();
       }
     } catch (err) {
-      // Defensive: some A-Frame internal states may not be fully available on some devices.
       console.warn('Failed to adjust renderer/camera settings:', err);
     }
     sceneEl.renderer.setAnimationLoop(() => {
       rotatingObjects.forEach((obj, i) => {
         if (!obj) return;
-        obj.rotation.y += 0.002 + i * 0.001; // different speeds
+        obj.rotation.y += 0.002 + i * 0.001;
         if (obj.name === 'moon') obj.rotation.y += 0.0005;
         if (obj.name === 'phoenix') obj.rotation.y += 0.003;
       });
