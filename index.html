@@ -7,10 +7,9 @@
 
   <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-
-  <!-- Stable AR.js -->
+  <!-- AR.js -->
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
-  
+
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -19,35 +18,29 @@
     embedded
     vr-mode-ui="enabled: false"
     renderer="logarithmicDepthBuffer: true; antialias: true;"
-    arjs="trackingMethod: best;
-          sourceType: webcam;
-          sourceWidth: 1280;
-          sourceHeight: 720;
-          maxWidth: 1280;
-          maxHeight: 720;">
+    arjs="trackingMethod: best; sourceType: webcam;">
+
+    <!-- Standard camera, not forced by AR.js -->
+    <a-entity camera look-controls></a-entity>
 
     <!-- Sun -->
     <a-nft type="nft" url="assets/markers/1_sun" smooth="true">
-      <a-entity id="sun" position="0 0 0" visible="false"></a-entity>
-      <a-text value="1. Sun" color="#ffcc33" align="center" position="0 4 0" scale="5 5 5" visible="false"></a-text>
-    </a-nft>
-
-    <!-- Moon -->
-    <a-nft type="nft" url="assets/markers/3_moon" smooth="true">
-      <a-entity id="moon" position="0 0 0" visible="false"></a-entity>
-      <a-text value="2. Moon" color="#ffffff" align="center" position="0 4 0" scale="5 5 5" visible="false"></a-text>
+      <a-entity id="sun" visible="false"></a-entity>
     </a-nft>
 
     <!-- Mars -->
     <a-nft type="nft" url="assets/markers/2_star" smooth="true">
-      <a-entity id="mars" position="0 0 0" visible="false"></a-entity>
-      <a-text value="3. Mars" color="#ff6666" align="center" position="0 4 0" scale="5 5 5" visible="false"></a-text>
+      <a-entity id="mars" visible="false"></a-entity>
+    </a-nft>
+
+    <!-- Moon -->
+    <a-nft type="nft" url="assets/markers/3_moon" smooth="true">
+      <a-entity id="moon" visible="false"></a-entity>
     </a-nft>
 
     <!-- Phoenix -->
     <a-nft type="nft" url="assets/markers/4_comet" smooth="true">
-      <a-entity id="phoenix" position="0 0 0" visible="false"></a-entity>
-      <a-text value="4. Phoenix" color="#33ffcc" align="center" position="0 4 0" scale="5 5 5" visible="false"></a-text>
+      <a-entity id="phoenix" visible="false"></a-entity>
     </a-nft>
 
   </a-scene>

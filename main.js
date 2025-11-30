@@ -5,7 +5,7 @@ const loader = new GLTFLoader();
 const rotatingObjects = [];
 let sunLight;
 
-// Function to create glowing sun sphere
+// Create glowing sun sphere
 function createSun() {
   const sunColor = 0x73430d;
   const sunGeo = new THREE.SphereGeometry(3, 64, 64);
@@ -19,7 +19,6 @@ function createSun() {
   const sun = new THREE.Mesh(sunGeo, sunMat);
   sun.name = 'sun';
 
-  // Halo using PointLight
   sunLight = new THREE.PointLight(sunColor, 2.5, 50, 2);
   sun.add(sunLight);
 
@@ -38,12 +37,18 @@ function loadModel(path, scale = 1, position = { x:0, y:0, z:0 }) {
   });
 }
 
+// Optional: scale objects proportionally by distance
+function scaleByDistance(obj, camera, factor = 0.2) {
+  const distance = camera.position.distanceTo(obj.position);
+  obj.scale.setScalar(factor * distance);
+}
+
 // Initialize AR scene
 async function init() {
   const sun = createSun();
-  const mars = await loadModel('/models/mars/mars.gltf', 0.35, { x: 0, y: 0, z: -2 });
-  const moon = await loadModel('/models/moon/moon.gltf', 0.25, { x: 0, y: 0, z: -2 });
-  const phoenix = await loadModel('/models/planet_of_phoenix/planet_of_phoenix.gltf', 0.6, { x: 0, y: 0, z: -2 });
+  const mars = await loadModel('/models/mars/mars.gltf', 1, { x: -1.5, y: 0, z: -5 });
+  const moon = await loadModel('/models/moon/moon.gltf', 1, { x: 1.5, y: 0, z: -4 });
+  const phoenix = await loadModel('/models/planet_of_phoenix/planet_of_phoenix.gltf', 1, { x: 0, y: 0, z: -6 });
 
   // Attach models to AR entities
   document.querySelector('#sun').setObject3D('mesh', sun);
@@ -57,7 +62,7 @@ async function init() {
     if (el) el.setAttribute('visible', false);
   });
 
-  // Toggle visibility with marker events
+  // Toggle visibility with markers
   function toggleVisibility(markerUrl, id) {
     const markerEl = document.querySelector(`a-nft[url="${markerUrl}"]`);
     const objEl = document.querySelector(`#${id}`);
@@ -70,24 +75,23 @@ async function init() {
   toggleVisibility('assets/markers/3_moon', 'moon');
   toggleVisibility('assets/markers/4_comet', 'phoenix');
 
-  // Rotate planets
+  // Push objects to rotation array
   rotatingObjects.push(sun, mars, moon, phoenix);
 
   const sceneEl = document.querySelector('a-scene');
 
-  // Fix camera FOV and renderer after scene is loaded
   sceneEl.addEventListener('loaded', () => {
     try {
-      // Camera setup
+      // Standard A-Frame camera setup
       const cam = sceneEl.camera;
       if (cam && cam.isPerspectiveCamera) {
-        cam.fov = 60;           // Normal phone camera FOV
+        cam.position.set(0, 1.6, 3); // eye-level starting position
+        cam.fov = 60;
         cam.near = 0.1;
         cam.far = 1000;
         cam.updateProjectionMatrix();
       }
 
-      // Renderer setup
       if (sceneEl.renderer) {
         sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1);
         sceneEl.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -96,20 +100,23 @@ async function init() {
         sceneEl.renderer.toneMappingExposure = 1.0;
       }
     } catch (err) {
-      console.warn('Failed to adjust renderer/camera settings:', err);
+      console.warn('Failed to adjust camera/renderer:', err);
     }
 
-    // Rotation animation
+    // Rotation and optional distance-based scaling
     sceneEl.renderer.setAnimationLoop(() => {
       rotatingObjects.forEach((obj, i) => {
         if (!obj) return;
         obj.rotation.y += 0.002 + i * 0.001;
         if (obj.name === 'moon') obj.rotation.y += 0.0005;
         if (obj.name === 'phoenix') obj.rotation.y += 0.003;
+
+        // Scale dynamically by distance from camera
+        scaleByDistance(obj, sceneEl.camera, 0.2);
       });
     });
   });
 }
 
-// Initialize AR
+// Start everything
 init();
