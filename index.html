@@ -1,70 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-
-  <!-- Working viewport -->
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space AR</title>
 
-  <title>Space AR NFTs</title>
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 
-  <!-- Correct AR.js + A-Frame build -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/ar.js@3.4.5/aframe/build/aframe-ar-nft.js"></script>
+  <!-- AR.js NFT -->
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
 
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #000;
+    }
+    #startBtn {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 22px;
+      font-size: 18px;
+      z-index: 9999;
+    }
+  </style>
 </head>
 
-<body style="margin:0; overflow:hidden">
+<body>
+  <button id="startBtn">Start AR</button>
 
-  <!-- AR Scene -->
   <a-scene
-    vr-mode-ui="enabled: false"
+    id="scene"
     embedded
-    renderer="logarithmicDepthBuffer: true;"
-    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+    vr-mode-ui="enabled: false"
+    renderer="logarithmicDepthBuffer: true"
+    arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best"
   >
 
-    <!-- 1 — SUN -->
+    <!-- Correct path to NFT folder -->
     <a-nft
+      id="sunMarker"
       type="nft"
-      url="assets/markers/1_sun"
+      url="assets/markers/1_sun/1_sun"
       smooth="true"
       smoothCount="10"
       smoothTolerance="0.01"
-      smoothThreshold="5"
-    >
-      <a-entity id="sun" visible="false"></a-entity>
-      <a-text value="1. Sun" color="#ffcc33" align="center"
-              position="0 4 0" scale="5 5 5" visible="false"></a-text>
+      smoothThreshold="5">
+
+      <a-box color="yellow" depth="1" height="1" width="1"></a-box>
+
     </a-nft>
 
-    <!-- 2 — MOON -->
-    <a-nft type="nft" url="assets/markers/3_moon">
-      <a-entity id="moon" visible="false"></a-entity>
-      <a-text value="2. Moon" color="#ffffff" align="center"
-              position="0 4 0" scale="5 5 5" visible="false"></a-text>
-    </a-nft>
-
-    <!-- 3 — MARS -->
-    <a-nft type="nft" url="assets/markers/2_star">
-      <a-entity id="mars" visible="false"></a-entity>
-      <a-text value="3. Mars" color="#ff6666" align="center"
-              position="0 4 0" scale="5 5 5" visible="false"></a-text>
-    </a-nft>
-
-    <!-- 4 — PHOENIX -->
-    <a-nft type="nft" url="assets/markers/4_comet">
-      <a-entity id="phoenix" visible="false"></a-entity>
-      <a-text value="4. Phoenix" color="#33ffcc" align="center"
-              position="0 4 0" scale="5 5 5" visible="false"></a-text>
-    </a-nft>
-
-    <!-- Camera -->
     <a-entity camera></a-entity>
   </a-scene>
 
-  <script src="main.js"></script>
-
+  <script src="/main.js"></script>
 </body>
 </html>

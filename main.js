@@ -1,27 +1,26 @@
-// Force scan order: Sun → Moon → Mars → Phoenix
-const markerOrder = ["sun", "moon", "mars", "phoenix"];
-let currentIndex = 0;
+document.getElementById("startBtn").addEventListener("click", async () => {
+  try {
+    const videoSettings = {
+      audio: false,
+      video: {
+        facingMode: { ideal: "environment" },
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+        frameRate: { ideal: 30 },
+        zoom: 1.0
+      }
+    };
 
-markerOrder.forEach((id, index) => {
-  const entity = document.querySelector(`#${id}`);
-  const text = entity.nextElementSibling;
-  const marker = entity.parentNode;
+    const stream = await navigator.mediaDevices.getUserMedia(videoSettings);
 
-  marker.addEventListener("markerFound", () => {
-    // Correct next marker → show it
-    if (index === currentIndex) {
-      entity.setAttribute("visible", true);
-      text.setAttribute("visible", true);
-      currentIndex++;
-    } else {
-      // Wrong marker → keep hidden
-      entity.setAttribute("visible", false);
-      text.setAttribute("visible", false);
-    }
-  });
+    const arToolkitSource = document.querySelector("a-scene").systems["arjs"].arToolkitSource;
+    const video = arToolkitSource.domElement;
 
-  marker.addEventListener("markerLost", () => {
-    entity.setAttribute("visible", false);
-    text.setAttribute("visible", false);
-  });
+    video.srcObject = stream;
+
+    console.log("Camera started successfully.");
+  } catch (err) {
+    console.error("Camera error:", err);
+    alert("Could not start camera: " + err.message);
+  }
 });
