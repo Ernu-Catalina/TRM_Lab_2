@@ -38,14 +38,12 @@ function loadModel(path, scale = 1, position = { x:0, y:0, z:0 }) {
   });
 }
 
-// Initialize each NFT entity with 3D object
-// ...existing code...
+// Initialize AR scene
 async function init() {
   const sun = createSun();
-  // scale smaller and move slightly back in z so they're not right on the marker
-  const mars = await loadModel('/models/mars/mars.gltf', 0.35, { x: 0, y: 0, z: -1.0 });
-  const moon = await loadModel('/models/moon/moon.gltf', 0.25, { x: 0, y: 0, z: -0.8 });
-  const phoenix = await loadModel('/models/planet_of_phoenix/planet_of_phoenix.gltf', 0.6, { x: 0, y: 0, z: -1.2 });
+  const mars = await loadModel('/models/mars/mars.gltf', 0.35, { x: 0, y: 0, z: -2 });
+  const moon = await loadModel('/models/moon/moon.gltf', 0.25, { x: 0, y: 0, z: -2 });
+  const phoenix = await loadModel('/models/planet_of_phoenix/planet_of_phoenix.gltf', 0.6, { x: 0, y: 0, z: -2 });
 
   // Attach models to AR entities
   document.querySelector('#sun').setObject3D('mesh', sun);
@@ -53,7 +51,7 @@ async function init() {
   document.querySelector('#moon').setObject3D('mesh', moon);
   document.querySelector('#phoenix').setObject3D('mesh', phoenix);
 
-  // Start them hidden until the marker is found
+  // Start hidden until marker is found
   ['sun','mars','moon','phoenix'].forEach(id => {
     const el = document.querySelector(`#${id}`);
     if (el) el.setAttribute('visible', false);
@@ -75,10 +73,21 @@ async function init() {
   // Rotate planets
   rotatingObjects.push(sun, mars, moon, phoenix);
 
-  // Animate rotation
   const sceneEl = document.querySelector('a-scene');
-  sceneEl.addEventListener('renderstart', () => {
+
+  // Fix camera FOV and renderer after scene is loaded
+  sceneEl.addEventListener('loaded', () => {
     try {
+      // Camera setup
+      const cam = sceneEl.camera;
+      if (cam && cam.isPerspectiveCamera) {
+        cam.fov = 60;           // Normal phone camera FOV
+        cam.near = 0.1;
+        cam.far = 1000;
+        cam.updateProjectionMatrix();
+      }
+
+      // Renderer setup
       if (sceneEl.renderer) {
         sceneEl.renderer.setPixelRatio(window.devicePixelRatio || 1);
         sceneEl.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -86,16 +95,11 @@ async function init() {
         sceneEl.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         sceneEl.renderer.toneMappingExposure = 1.0;
       }
-
-      // AR.js will set projection, but use a reasonable fallback
-      if (sceneEl.camera && sceneEl.camera.isPerspectiveCamera) {
-        sceneEl.camera.fov = 75;
-        sceneEl.camera.aspect = window.innerWidth / window.innerHeight;
-        sceneEl.camera.updateProjectionMatrix();
-      }
     } catch (err) {
       console.warn('Failed to adjust renderer/camera settings:', err);
     }
+
+    // Rotation animation
     sceneEl.renderer.setAnimationLoop(() => {
       rotatingObjects.forEach((obj, i) => {
         if (!obj) return;

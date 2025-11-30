@@ -15,20 +15,16 @@
 </head>
 
 <body>
-
-<a-entity camera id="arCamera" fov="75" position="0 0 0"></a-entity>
-
-  <!-- AR Scene -->
-<a-scene
+  <a-scene
     embedded
     vr-mode-ui="enabled: false"
     renderer="logarithmicDepthBuffer: true; antialias: true;"
     arjs="trackingMethod: best;
-      sourceType: webcam;
-      sourceWidth: 1280;
-      sourceHeight: 720;
-      maxWidth: 1280;
-      maxHeight: 720;">
+          sourceType: webcam;
+          sourceWidth: 1280;
+          sourceHeight: 720;
+          maxWidth: 1280;
+          maxHeight: 720;">
 
     <!-- Sun -->
     <a-nft type="nft" url="assets/markers/1_sun" smooth="true">
@@ -56,6 +52,6 @@
 
   </a-scene>
 
-  <script src="main.js"></script>
+  <script type="module" src="main.js"></script>
 </body>
 </html>
