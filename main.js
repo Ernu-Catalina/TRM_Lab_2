@@ -7,7 +7,7 @@ let sunLight;
 
 if (sceneEl.camera) {
   // Set a wider Field Of View (increase value to reduce zoom)
-  sceneEl.camera.fov = 75; // try values 60-90; larger = wider view (less zoom)
+  sceneEl.camera.fov = 250; // try values 60-90; larger = wider view (less zoom)
   sceneEl.camera.updateProjectionMatrix();
 }
 
