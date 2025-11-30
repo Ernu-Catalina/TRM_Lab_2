@@ -29,8 +29,8 @@ function loadModel(path, scale = 1) {
     });
 }
 
-// Initialize scene
-async function init() {
+// Initialize scene objects
+async function initScene() {
     const sun = createSun();
     const mars = await loadModel('/models/mars/mars.gltf', 0.35);
     const moon = await loadModel('/models/moon/moon.gltf', 0.25);
@@ -44,28 +44,6 @@ async function init() {
 
     rotatingObjects.push(sun, mars, moon, phoenix);
 
-    // Setup video background
-    const video = document.getElementById('video');
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } }, 
-            audio: false 
-        });
-        video.srcObject = stream;
-        video.play();
-
-        // Assign VideoTexture to plane
-        const planeEl = document.querySelector('#video-bg');
-        const videoTexture = new THREE.VideoTexture(video);
-        videoTexture.minFilter = THREE.LinearFilter;
-        videoTexture.magFilter = THREE.LinearFilter;
-        videoTexture.format = THREE.RGBFormat;
-        planeEl.getObject3D('mesh').material.map = videoTexture;
-        planeEl.getObject3D('mesh').material.needsUpdate = true;
-    } catch(err) {
-        console.warn('Could not access camera:', err);
-    }
-
     // Animate rotation
     const sceneEl = document.querySelector('a-scene');
     sceneEl.addEventListener('renderstart', () => {
@@ -78,4 +56,34 @@ async function init() {
     });
 }
 
-init();
+// Start AR: request camera access on user gesture
+document.getElementById('start-btn').addEventListener('click', async () => {
+    const video = document.getElementById('video');
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } },
+            audio: false
+        });
+        video.srcObject = stream;
+        await video.play();
+
+        // Assign video as texture to plane
+        const planeEl = document.querySelector('#video-bg');
+        const videoTexture = new THREE.VideoTexture(video);
+        videoTexture.minFilter = THREE.LinearFilter;
+        videoTexture.magFilter = THREE.LinearFilter;
+        videoTexture.format = THREE.RGBFormat;
+        planeEl.getObject3D('mesh').material.map = videoTexture;
+        planeEl.getObject3D('mesh').material.needsUpdate = true;
+
+        // Hide start button
+        document.getElementById('start-btn').style.display = 'none';
+
+        // Initialize objects after camera feed is ready
+        await initScene();
+
+    } catch(err) {
+        console.warn('Camera access failed:', err);
+        alert('Camera access is required for AR.');
+    }
+});
