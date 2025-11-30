@@ -1,0 +1,27 @@
+{
+  "name": "lab_2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ernu-Catalina/TRM_Lab_2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Ernu-Catalina/TRM_Lab_2/issues"
+  },
+  "homepage": "https://github.com/Ernu-Catalina/TRM_Lab_2#readme",
+  "dependencies": {
+    "three": "^0.181.2"
+  },
+  "devDependencies": {
+    "vite": "^7.2.4"
+  }
+}

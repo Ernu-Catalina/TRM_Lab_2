@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space AR NFTs</title>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ar.js@4.2.1/aframe/build/aframe-ar.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+  <a-scene embedded arjs="trackingMethod: best;" renderer="logarithmicDepthBuffer: true;">
+    
+    <!-- 1. Sun -->
+    <a-nft type="nft" url="assets/markers/1_sun" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
+      <a-entity id="sun" position="0 0 0" rotation="0 0 0" visible="false"></a-entity>
+      <a-text value="1. Sun" color="#ffcc33" align="center" position="0 4 0" scale="5 5 5" visible="false"></a-text>
+    </a-nft>
+
+    <!-- 2. Moon -->
+    <a-nft type="nft" url="assets/markers/3_moon" smooth="true">
+      <a-entity id="moon" position="0 0 0" visible="false"></a-entity>
+      <a-text value="2. Moon" color="#ffffff" align="center" position="0 4 0" scale="5 5 5" visible="false"></a-text>
+    </a-nft>
+
+    <!-- 3. Mars -->
+    <a-nft type="nft" url="assets/markers/2_star" smooth="true">
+      <a-entity id="mars" position="0 0 0" visible="false"></a-entity>
+      <a-text value="3. Mars" color="#ff6666" align="center" position="0 4 0" scale="5 5 5" visible="false"></a-text>
+    </a-nft>
+
+    <!-- 4. Phoenix -->
+    <a-nft type="nft" url="assets/markers/4_comet" smooth="true">
+      <a-entity id="phoenix" position="0 0 0" visible="false"></a-entity>
+      <a-text value="4. Phoenix" color="#33ffcc" align="center" position="0 4 0" scale="5 5 5" visible="false"></a-text>
+    </a-nft>
+
+  </a-scene>
+
+  <script src="main.js"></script>
+</html>
