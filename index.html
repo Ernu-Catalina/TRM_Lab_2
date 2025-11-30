@@ -1,47 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Space AR NFTs</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space AR Scene</title>
 
   <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-  <!-- AR.js for A-Frame -->
+  <!-- AR.js just for marker detection -->
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
-  
-  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <a-scene
-      embedded
-      vr-mode-ui="enabled: false"
-      renderer="logarithmicDepthBuffer: true; antialias: true;"
-      arjs="trackingMethod: best; sourceType: webcam; sourceWidth: 1280; sourceHeight: 720; maxWidth: 1280; maxHeight: 720;">
 
-      <!-- Sun Marker -->
-      <a-nft type="nft" url="assets/markers/1_sun" smooth="true">
-        <a-entity id="sun" position="0 0 0" visible="false" class="rotating"></a-entity>
-      </a-nft>
+<a-scene embedded vr-mode-ui="enabled: false" renderer="antialias: true; logarithmicDepthBuffer: true;">
+  
+  <!-- Camera with normal FOV, not overridden by AR.js -->
+  <a-entity camera position="0 1.6 0"></a-entity>
 
-      <!-- Mars Marker -->
-      <a-nft type="nft" url="assets/markers/2_star" smooth="true">
-        <a-entity id="mars" position="0 0 0" visible="false" class="rotating"></a-entity>
-      </a-nft>
+  <!-- Sun Marker -->
+  <a-nft type="nft" url="assets/markers/1_sun" smooth="true">
+    <a-entity id="sun" position="0 0 0" visible="false" class="rotating"></a-entity>
+  </a-nft>
 
-      <!-- Moon Marker -->
-      <a-nft type="nft" url="assets/markers/3_moon" smooth="true">
-        <a-entity id="moon" position="0 0 0" visible="false" class="rotating"></a-entity>
-      </a-nft>
+  <!-- Mars Marker -->
+  <a-nft type="nft" url="assets/markers/2_star" smooth="true">
+    <a-entity id="mars" position="0 0 0" visible="false" class="rotating"></a-entity>
+  </a-nft>
 
-      <!-- Phoenix Marker -->
-      <a-nft type="nft" url="assets/markers/4_comet" smooth="true">
-        <a-entity id="phoenix" position="0 0 0" visible="false" class="rotating"></a-entity>
-      </a-nft>
+  <!-- Moon Marker -->
+  <a-nft type="nft" url="assets/markers/3_moon" smooth="true">
+    <a-entity id="moon" position="0 0 0" visible="false" class="rotating"></a-entity>
+  </a-nft>
 
-      <a-entity camera id="main-camera" position="0 1.6 0"></a-entity>
-  </a-scene>
+  <!-- Phoenix Marker -->
+  <a-nft type="nft" url="assets/markers/4_comet" smooth="true">
+    <a-entity id="phoenix" position="0 0 0" visible="false" class="rotating"></a-entity>
+  </a-nft>
 
-  <script type="module" src="main.js"></script>
+</a-scene>
+
+<script type="module" src="main.js"></script>
 </body>
 </html>
