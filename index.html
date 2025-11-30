@@ -1,58 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Space AR</title>
+  <meta charset="UTF-8" />
+
+  <!-- proper viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- A-Frame -->
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
 
-  <!-- AR.js NFT -->
-  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+  <!-- Stable AR.js (NOT the npm one) -->
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
 
-  <style>
-    body, html { margin: 0; padding: 0; overflow: hidden; background: #000; }
-    #startBtn {
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 12px 22px;
-      font-size: 18px;
-      z-index: 9999;
-    }
-  </style>
+  <title>Space AR</title>
 </head>
 
-<body>
+<body style="margin:0; overflow:hidden; background:black;">
+  
+  <!-- Start button -->
+  <button id="startBtn" 
+    style="position:absolute; top:10px; left:10px; z-index:9999; font-size:18px;">
+    Start AR
+  </button>
 
-<button id="startBtn">Start AR</button>
+  <!-- AR Scene (visible from start, not hidden) -->
+  <a-scene
+    id="ar-scene"
+    embedded
+    renderer="logarithmicDepthBuffer: true;"
+    vr-mode-ui="enabled: false;"
+    device-orientation-permission-ui="enabled: true;"
+    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+  >
+    <a-nft type="nft" url="assets/markers/1_sun">
+      <a-box color="yellow" position="0 0 0"></a-box>
+    </a-nft>
+  </a-scene>
 
-<a-scene 
-  embedded 
-  arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false"
-  vr-mode-ui="enabled: false"
->
+  <script>
+    const btn = document.getElementById("startBtn");
+    const scene = document.getElementById("ar-scene");
 
-  <!-- 1. Sun NFT -->
-  <a-nft type="nft" url="assets/markers/1_sun/1_sun" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
-    <a-box color="yellow" depth="1" height="1" width="1"></a-box>
-  </a-nft>
+    btn.addEventListener("click", () => {
+      // Request camera permission explicitly
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(() => {
+          btn.style.display = "none";
 
-  <!-- Camera -->
-  <a-entity camera></a-entity>
-</a-scene>
-
-<script>
-  const btn = document.getElementById('startBtn');
-  const scene = document.getElementById('scene');
-
-  btn.addEventListener('click', () => {
-    scene.style.display = 'block'; // just show the scene
-    btn.style.display = 'none';
-  });
-</script>
+          // Ensure AR.js system initializes AFTER A-Frame loads
+          scene.addEventListener("loaded", () => {
+            scene.systems["arjs"]._onReady();
+          });
+        })
+        .catch(err => {
+          alert("Camera permission denied: " + err);
+        });
+    });
+  </script>
 
 </body>
 </html>
