@@ -94,12 +94,31 @@
       ></a-entity>
     </a-nft>
 
-    <a-entity camera></a-entity>
+    <a-entity camera>
+  <a-entity id="orderText"
+            position="0 0.5 -1.5"
+            text="value: Follow the path: Italy, Japan, Iceland.; color: white; align: center; width: 0.7; baseline: center"
+            visible="false">
+  </a-entity>
+</a-entity>
   </a-scene>
 
   <script>
     let colosseumScanned = false;
     let toriiScanned = false;
+
+  
+  document.querySelector("a-scene").addEventListener("loaded", () => {
+    const text = document.getElementById("orderText");
+
+    // Show the text immediately
+    text.setAttribute("visible", true);
+
+    // Hide after 4 seconds
+    setTimeout(() => {
+      text.setAttribute("visible", false);
+    }, 4000);
+  });
 
     // 1 — Scan Colosseum
     document.querySelector("#colosseumMarker").addEventListener("markerFound", () => {
