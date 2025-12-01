@@ -33,28 +33,9 @@
     arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
   >
 
+    <!-- 1 — COLOSSEUM (First) -->
     <a-nft
-
-      type="nft"
-      url="https://raw.githubusercontent.com/Ernu-Catalina/TRM_Lab_2/main/textures/iceland/marker""
-      smooth="true"
-      smoothCount="10"
-      smoothTolerance=".01"
-      smoothThreshold="5"
-    >
-      <a-entity
-  
-        position="75 0 0"
-        scale="0.6 0.6 0.6"
-        gltf-model="models/geyser.glb"
-        rotation="-90 0 0 "
-   
-      ></a-entity>
-    </a-nft>
-
-  
-    <a-nft
- 
+      id="colosseumMarker"
       type="nft"
       url="https://raw.githubusercontent.com/Ernu-Catalina/TRM_Lab_2/main/textures/italy/marker"
       smooth="true"
@@ -62,9 +43,9 @@
       smoothTolerance=".01"
       smoothThreshold="5"
     >
-
-            <a-entity
-     
+      <a-entity
+        id="colosseumModel"
+        visible="false"
         position="0 -300 -100"
         scale="30 30 30"
         gltf-model="models/colosseum.glb"
@@ -72,9 +53,9 @@
       ></a-entity>
     </a-nft>
 
-    <!-- 4 — Phoenix -->
+    <!-- 2 — TORII (Second) -->
     <a-nft
-  
+      id="toriiMarker"
       type="nft"
       url="https://raw.githubusercontent.com/Ernu-Catalina/TRM_Lab_2/main/textures/japan/marker"
       smooth="true"
@@ -84,12 +65,32 @@
     >
 
       <a-entity
-  
-        position="50 -100 -50"
+        id="toriiModel"
+        visible="false"
+        position="20 -100 -50"
         scale="0.4 0.4 0.4"
         gltf-model="models/torii.glb"
         rotation="-90 0 0"
-     
+      ></a-entity>
+    </a-nft>
+
+    <!-- 3 — GEYSER (Third) -->
+    <a-nft
+      id="geyserMarker"
+      type="nft"
+      url="https://raw.githubusercontent.com/Ernu-Catalina/TRM_Lab_2/main/textures/iceland/marker"
+      smooth="true"
+      smoothCount="10"
+      smoothTolerance=".01"
+      smoothThreshold="5"
+    >
+      <a-entity
+        id="geyserModel"
+        visible="false"
+        position="75 0 0"
+        scale="0.6 0.6 0.6"
+        gltf-model="models/geyser.glb"
+        rotation="-90 0 0"
       ></a-entity>
     </a-nft>
 
@@ -97,28 +98,34 @@
   </a-scene>
 
   <script>
-    let scanned1 = false;
-    let scanned2 = false;
+    let colosseumScanned = false;
+    let toriiScanned = false;
 
-    // Unlock Mars when Sun scanned
-    document.querySelector("#marker1").addEventListener("markerFound", () => {
-      scanned1 = true;
-      document.querySelector("#marsModel").setAttribute("visible", true);
+    // 1 — Scan Colosseum
+    document.querySelector("#colosseumMarker").addEventListener("markerFound", () => {
+      colosseumScanned = true;
+      document.querySelector("#colosseumModel").setAttribute("visible", true);
+      console.log("Colosseum scanned — next unlock is Torii.");
     });
 
-    // Unlock Moon when Sun & Mars scanned
-    document.querySelector("#marker2").addEventListener("markerFound", () => {
-      if (scanned1) {
-        scanned2 = true;
-        document.querySelector("#moonModel").setAttribute("visible", true);
+    // 2 — Scan Torii only if Colosseum scanned
+    document.querySelector("#toriiMarker").addEventListener("markerFound", () => {
+      if (colosseumScanned) {
+        toriiScanned = true;
+        document.querySelector("#toriiModel").setAttribute("visible", true);
+        console.log("Torii scanned — next unlock is Geyser.");
+      } else {
+        console.log("Scan order wrong: Scan COLOSSEUM first.");
       }
     });
 
-    // Unlock Phoenix when Sun & Mars & Moon scanned
-    document.querySelector("#marker3").addEventListener("markerFound", () => {
-      if (scanned1 && scanned2) {
-        scanned3 = true;
-        document.querySelector("#phoenixModel").setAttribute("visible", true);
+    // 3 — Scan Geyser only if Torii scanned
+    document.querySelector("#geyserMarker").addEventListener("markerFound", () => {
+      if (colosseumScanned && toriiScanned) {
+        document.querySelector("#geyserModel").setAttribute("visible", true);
+        console.log("Geyser unlocked — sequence complete!");
+      } else {
+        console.log("Scan order wrong: Scan COLOSSEUM then TORII first.");
       }
     });
   </script>
